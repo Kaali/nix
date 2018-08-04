@@ -1,0 +1,6 @@
+[submodule "darwin"]
+	path = darwin
+	url = git@github.com:LnL7/nix-darwin.git
+[submodule "nixpkgs"]
+	path = nixpkgs
+	url = git://github.com/NixOS/nixpkgs.git
