@@ -6,7 +6,7 @@
     vim
 
     # nix
-    nix-repl
+    nix-prefetch-scripts
 
     # utils
     ripgrep
