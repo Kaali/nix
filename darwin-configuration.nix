@@ -14,6 +14,7 @@
     fzf
     gitAndTools.gitFull
     coreutils
+    fd
 
     # nodejs
     nodejs-10_x
