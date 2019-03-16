@@ -34,9 +34,9 @@
   services.activate-system.enable = true;
   nix.package = pkgs.nixUnstable;
   nix.nixPath = [
-    "darwin-config=$HOME/Devel/nix/darwin-configuration.nix"
-    "darwin=$HOME/Devel/nix/darwin"
-    "nixpkgs=$HOME/Devel/nix/nixpkgs"
+    "darwin-config=$HOME/dev/nix/darwin-configuration.nix"
+    "darwin=$HOME/dev/nix/darwin"
+    "nixpkgs=$HOME/dev/nix/nixpkgs"
     "$HOME/.nix-defexpr/channels"
     "$HOME/.nix-defexpr"
   ];
