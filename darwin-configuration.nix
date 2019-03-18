@@ -27,6 +27,7 @@
       rope
       isort
       yapf
+      python-language-server
     ]))
   ];
 
