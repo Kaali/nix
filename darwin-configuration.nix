@@ -9,26 +9,24 @@
     nix-prefetch-scripts
 
     # utils
+    ag
     ripgrep
     direnv
     fzf
     gitAndTools.gitFull
     coreutils
     fd
+    httpie
+    (sox.override { enableLibsndfile = true; })
+    wireshark
 
     # nodejs
-    nodejs-10_x
+    nodejs-11_x
     pkgs.nodePackages.javascript-typescript-langserver
 
     # python
-    (python36.withPackages(ps: with ps; [
-      setuptools
-      jedi
-      rope
-      isort
-      yapf
-      python-language-server
-    ]))
+    pipenv
+    python3
   ];
 
   # Auto upgrade nix package and the daemon service.

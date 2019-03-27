@@ -1,3 +1,6 @@
+dry-check:
+	darwin-rebuild check --dry-run
+
 check:
 	darwin-rebuild check
 
