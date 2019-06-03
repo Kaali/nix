@@ -18,14 +18,13 @@
     fd
     httpie
     (sox.override { enableLibsndfile = true; })
-    wireshark
-    skaffold
-    kompose
     entr
+    ispell
 
     # nodejs
     nodejs-11_x
     pkgs.nodePackages.javascript-typescript-langserver
+    pkgs.nodePackages.eslint
     pkgs.nodePackages.prettier
 
     # python
@@ -36,7 +35,7 @@
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
   services.activate-system.enable = true;
-  nix.package = pkgs.nixUnstable;
+  nix.package = pkgs.nix;
   nix.nixPath = [
     "darwin-config=$HOME/dev/nix/darwin-configuration.nix"
     "darwin=$HOME/dev/nix/darwin"
@@ -57,11 +56,11 @@
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
-  system.stateVersion = 3;
+  system.stateVersion = 4;
 
   # You should generally set this to the total number of logical cores in your system.
   # $ sysctl -n hw.ncpu
-  nix.maxJobs = 2;
+  nix.maxJobs = 1;
   nix.buildCores = 1;
 
   programs.nix-index.enable = true;
