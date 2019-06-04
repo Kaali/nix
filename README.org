@@ -1,0 +1,7 @@
+When everything fails:
+
+* Restore with setting Terminal.app shell to default
+* Run `alias ls=ls` to get rid of newer bash things
+* Remove /etc/bashrc
+* Run /run/current-system/sw/bin/darwin-rebuild switch -I darwin=$HOME/dev/nix/darwin -I darwin-config=$HOME/dev/nix/darwin-configuration.nix -I nixpkgs=$HOME/dev/nix/nixpkgs
+* Make sure ~/.nixpkgs was not created with default darwin-configuration.nix,  if it was remove it and run darwin-rebuild again

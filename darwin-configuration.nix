@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
     # editors
@@ -36,7 +36,7 @@
   services.nix-daemon.enable = true;
   services.activate-system.enable = true;
   nix.package = pkgs.nix;
-  nix.nixPath = [
+  nix.nixPath = lib.mkForce [
     "darwin-config=$HOME/dev/nix/darwin-configuration.nix"
     "darwin=$HOME/dev/nix/darwin"
     "nixpkgs=$HOME/dev/nix/nixpkgs"
