@@ -22,7 +22,7 @@
     ispell
 
     # nodejs
-    nodejs-11_x
+    nodejs_latest
     pkgs.nodePackages.javascript-typescript-langserver
     pkgs.nodePackages.eslint
     pkgs.nodePackages.prettier
