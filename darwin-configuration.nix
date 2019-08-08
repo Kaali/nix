@@ -1,8 +1,32 @@
 { config, pkgs, lib, ... }:
-{
+let
+  emacsHEAD = with pkgs; stdenv.lib.overrideDerivation
+    (pkgs.emacs26.override { srcRepo = true; }) (attrs: rec {
+      name = "emacs-27.0";
+      version = "27.0";
+      versionModifier = "";
+
+      doCheck = false;
+
+      buildInputs = attrs.buildInputs ++ [jansson];
+
+      CFLAGS = "";
+
+      patches = [
+        ./patches/emacs/clean-env.patch
+        ./nixpkgs/pkgs/applications/editors/emacs/tramp-detect-wrapped-gvfsd.patch
+      ];
+
+      src = fetchgit {
+        url = https://git.savannah.gnu.org/git/emacs.git;
+        rev = "8f4faf7aa1a1b92dbd4d1512592da44e47777e4b";
+        sha256 = "08y8z87y9f05nwjw5m3dg1ycpf54q64n63fv88b6m88m60k0x8q5";
+      };
+    });
+in {
   environment.systemPackages = with pkgs; [
     # editors
-    emacsMacport
+    emacsHEAD
     vim
 
     # nix
@@ -20,6 +44,8 @@
     (sox.override { enableLibsndfile = true; })
     entr
     ispell
+    pandoc
+    jq
 
     # nodejs
     nodejs_latest
