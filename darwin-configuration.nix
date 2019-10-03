@@ -3,7 +3,7 @@ let
   emacsHEAD = with pkgs; stdenv.lib.overrideDerivation
     (pkgs.emacs26.override { srcRepo = true; }) (attrs: rec {
       name = "emacs-27.0";
-      version = "27.0";
+      version = "20191003.0";
       versionModifier = "";
 
       doCheck = false;
@@ -19,8 +19,8 @@ let
 
       src = fetchgit {
         url = https://git.savannah.gnu.org/git/emacs.git;
-        rev = "8f4faf7aa1a1b92dbd4d1512592da44e47777e4b";
-        sha256 = "08y8z87y9f05nwjw5m3dg1ycpf54q64n63fv88b6m88m60k0x8q5";
+        rev = "1854511e97843e028a76cd5a6d8fee74cfabd3d1";
+        sha256 = "0vgn9p4wl93f95rpy2piiaf97f6yljkhgzgzycm1b216k3ppag5f";
       };
     });
 in {
@@ -46,6 +46,7 @@ in {
     ispell
     pandoc
     jq
+    protobuf
 
     # nodejs
     nodejs_latest
