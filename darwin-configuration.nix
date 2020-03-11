@@ -1,36 +1,73 @@
 { config, pkgs, lib, ... }:
-let
+let 
+  # From https://github.com/jwiegley/nix-config/blob/master/overlays/30-apps.nix
+  installApplication = 
+    { name, appname ? name, version, src, description, homepage, 
+      postInstall ? "", sourceRoot ? ".", ... }:
+    with pkgs; stdenv.mkDerivation {
+      name = "${name}-${version}";
+      version = "${version}";
+      src = src;
+      buildInputs = [ undmg unzip ];
+      sourceRoot = sourceRoot;
+      phases = [ "unpackPhase" "installPhase" ];
+      installPhase = ''
+        mkdir -p "$out/Applications/${appname}.app"
+        cp -pR * "$out/Applications/${appname}.app"
+      '' + postInstall;
+      meta = with stdenv.lib; {
+        description = description;
+        homepage = homepage;
+        maintainers = with maintainers; [ kaali ];
+        platforms = platforms.darwin;
+      };
+    };
+  Hammerspoon = installApplication rec {
+    name = "Hammerspoon";
+    version = "0.9.78";
+    sourceRoot = "Hammerspoon.app";
+    src = pkgs.fetchurl {
+      url = "https://github.com/Hammerspoon/hammerspoon/releases/download/0.9.78/Hammerspoon-0.9.78.zip";
+      sha256 = "1zz5sbf2cc7qc90c8f56ksq87wx70akjy5nia0jsfhzvqmw8lsm0";
+    };
+    description = "Staggeringly powerful macOS desktop automation with Lua";
+    homepage = https://www.hammerspoon.org;
+  };
   emacsHEAD = with pkgs; stdenv.lib.overrideDerivation
     (pkgs.emacs26.override { srcRepo = true; }) (attrs: rec {
-      name = "emacs-27.0";
-      version = "20191003.0";
-      versionModifier = "";
+      name = "emacs-${version}${versionModifier}";
+      version = "27.0";
+      versionModifier = ".50";
+      src = ~/dev/other/emacs;
 
       doCheck = false;
 
-      buildInputs = attrs.buildInputs ++ [jansson];
+      buildInputs = attrs.buildInputs ++
+        [ libpng libjpeg libungif libtiff librsvg
+          jansson freetype harfbuzz.dev git];
 
-      CFLAGS = "";
+      CFLAGS = "-O3 " + attrs.CFLAGS;
+
+      preConfigure = ''
+        sed -i -e 's/headerpad_extra=1000/headerpad_extra=2000/' configure.ac
+        autoreconf
+      '';
 
       patches = [
         ./patches/emacs/clean-env.patch
         ./nixpkgs/pkgs/applications/editors/emacs/tramp-detect-wrapped-gvfsd.patch
       ];
-
-      src = fetchgit {
-        url = https://git.savannah.gnu.org/git/emacs.git;
-        rev = "1854511e97843e028a76cd5a6d8fee74cfabd3d1";
-        sha256 = "0vgn9p4wl93f95rpy2piiaf97f6yljkhgzgzycm1b216k3ppag5f";
-      };
     });
+  emacsPackages = pkgs.emacsPackagesNgGen emacsHEAD;
+  emacsWithPackages = emacsPackages.emacsWithPackages (epkgs: [ epkgs.emacs-libvterm ]);
 in {
   environment.systemPackages = with pkgs; [
     # editors
-    emacsHEAD
+    emacsWithPackages
     vim
 
     # nix
-    nix-prefetch-scripts
+    # nix-prefetch-scripts
 
     # utils
     ag
@@ -41,16 +78,19 @@ in {
     coreutils
     fd
     httpie
-    (sox.override { enableLibsndfile = true; })
+    # (sox.override { enableLibsndfile = true; })
     entr
     ispell
     pandoc
     jq
     protobuf
+    Hammerspoon
+    postgresql # here for just psql
 
     # nodejs
     nodejs_latest
-    pkgs.nodePackages.javascript-typescript-langserver
+    pkgs.nodePackages.typescript-language-server
+    pkgs.nodePackages.typescript
     pkgs.nodePackages.eslint
     pkgs.nodePackages.prettier
 
@@ -58,6 +98,8 @@ in {
     pipenv
     python3
   ];
+
+  environment.variables.EDITOR = "vim";
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
@@ -78,7 +120,7 @@ in {
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.bash.enable = true;
   programs.bash.enableCompletion = true;
-  # programs.zsh.enable = true;
+  programs.zsh.enable = true;
   # programs.fish.enable = true;
 
   # Used for backwards compatibility, please read the changelog before changing.
